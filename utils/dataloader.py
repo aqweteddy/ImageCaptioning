@@ -36,9 +36,9 @@ class CocoDataset(data.Dataset):
         if self.transform is not None:
             img = self.transform(img)
         tokens = nltk.tokenize.word_tokenize(str(caption))
-        caption = [self.dct['<start>']]
-        caption.extend([self.dct[token] for token in tokens])
-        caption.append(self.dct['<end>'])
+        caption = [int(self.dct['<start>'])]
+        caption.extend([int(self.dct[token]) for token in tokens])
+        caption.append(int(self.dct['<end>']))
         target = torch.Tensor(caption)
         return img, target
     

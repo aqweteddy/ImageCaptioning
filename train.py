@@ -1,14 +1,3 @@
-#!/usr/bin/env python
-# coding: utf-8
-
-# In[1]:
-
-
-# TODO: training code
-
-
-# In[2]:
-
 
 import os
 
@@ -26,15 +15,8 @@ from torchvision import transforms
 from tqdm import tqdm
 
 
-# In[3]:
-
-
 device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 print(f'CUDA: {torch.cuda.is_available()}')
-
-
-# In[4]:
-
 
 crop_size = 224
 transform = transforms.Compose([ 
@@ -46,11 +28,9 @@ transforms.Normalize((0.485, 0.456, 0.406),
 dct = Dictionary()
 dct.load_dict('data/vocab.txt')
 data_loader = get_loader('data/train2014_resize', 'data/annotations/captions_train2014.json', dct, 
-                             transform, batch_size=32,
-                             shuffle=True, num_workers=5) 
+                             transform, batch_size=128,
+                             shuffle=True, num_workers=4) 
 
-
-# In[5]:
 
 
 def train(dct_size, num_layers=1, embed_size=256, hidden_size=512, epochs=10, save_step=1000, lr=0.001, model_save='model/'):
