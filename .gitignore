@@ -137,3 +137,4 @@ __*/
 *.zip
 .vscode/
 model/*.ckpt
+*.out
