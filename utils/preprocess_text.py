@@ -1,5 +1,5 @@
 import csv
-
+import nltk
 
 # TODO: a dictionary include all words(not test)
 # TODO: a tokenizer using nltk
@@ -8,13 +8,11 @@ import csv
 
 
 class Dictionary:
-    def __init__(self):
-        # id=0, padding token
-        # id=1, unknown <unk>
-
-        self.word2id = {"<pad>": 0, "<unk>": 1}
-        self.id2word = {0: "<pad>", 1: "<unk>"}
-        self.idx = 2
+    def __init__(self, tokenizer):
+        self.word2id = dict()
+        self.id2word = dict()
+        self.idx = 0
+        self.tokenizer = tokenizer if tokenizer else nltk.tokenize.word_tokenize
 
     def add_word(self, word: str) -> int:
         """
@@ -27,6 +25,9 @@ class Dictionary:
             self.id2word[self.idx] = word
             self.idx = self.idx + 1
             return self.idx - 1
+
+    def add_sentence(self, sentence: str) -> list:
+        return [self.add_word(word) for word in self.tokenize(sentence)]
 
     def __call__(self, word: str) -> int:
         """
@@ -52,3 +53,12 @@ class Dictionary:
                 self.word2idx[row[0]] = row[1]
                 self.id2word[row[1]] = row[0]
                 self.idx = len(self.word2idx)
+
+def build_dct(file: str):
+    dct = Dictionary()
+    dct.add_word('<pad>')
+    dct.add_word('<start>')
+    dct.add_word('<end>')
+    dct.add_word('<unk>')
+
+    with open(file, 'r'):
