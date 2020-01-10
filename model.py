@@ -27,7 +27,7 @@ class Decoder(nn.Module):
         super(Decoder, self).__init__()
         self.embed = nn.Embedding(dct_size, embed_size)
         self.lstm = nn.LSTM(embed_size, hidden_size, num_layers, batch_first=True)
-        self.linear = nn.Linear(hidden_size, vocab_size)
+        self.linear = nn.Linear(hidden_size, dct_size)
         self.max_len = max_len
     
     def forward(self, features, captions, lengths):

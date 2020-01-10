@@ -1,13 +1,16 @@
 # TODO: define dataloader
+import os
 
-from torch.utils.data import dataloader
-import torch.utils.data as data
-from pycocotools.coco import COCO
 import nltk
+import torch
+import torch.utils.data as data
+from PIL import Image
+from pycocotools.coco import COCO
+from torch.utils.data import dataloader
 
 
 class CocoDataset(data.Dataset):
-    def __init__(self, img_path: str, json: str, dct: object):
+    def __init__(self, img_path: str, json: str, dct: object, transform):
         """
         root: image directory.
         json: coco annotation file path.
@@ -18,22 +21,26 @@ class CocoDataset(data.Dataset):
         self.coco = COCO(json)
         self.ids = list(self.coco.anns.keys())
         self.dct = dct
+        self.transform = transform
     
     def __getitem__(self, key):
         """
         return pair(img, caption)
         """
+        
         ann_id = self.ids[key]
-        caption = self.coco.annotations[ann_id]['caption']
-        img_id = self.coco.annotations[ann_id]['image_id']
-        path = coco.loadImgs(img_id)[0]['file_name']
+        caption = self.coco.anns[ann_id]['caption']
+        img_id = self.coco.anns[ann_id]['image_id']
+        path = self.coco.loadImgs(img_id)[0]['file_name']
         img = Image.open(os.path.join(self.root, path)).convert('RGB')
+        if self.transform is not None:
+            img = self.transform(img)
         tokens = nltk.tokenize.word_tokenize(str(caption))
         caption = [self.dct['<start>']]
-        caption.extend([self.dct(token) for token in tokens])
+        caption.extend([self.dct[token] for token in tokens])
         caption.append(self.dct['<end>'])
         target = torch.Tensor(caption)
-        return image, target
+        return img, target
     
     def __len__(self):
         return len(self.ids)
@@ -71,9 +78,9 @@ def collate_fn(data):
 def get_loader(root, json, dct, transform, batch_size, shuffle, num_workers):
     """Returns torch.utils.data.DataLoader for custom coco dataset."""
     # COCO caption dataset
-    coco = CocoDataset(root=root,
+    coco = CocoDataset(img_path=root,
                        json=json,
-                       vocab=dct,
+                       dct=dct,
                        transform=transform)
     
     # Data loader for COCO dataset

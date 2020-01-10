@@ -50,7 +50,7 @@ class Dictionary:
                 writer.writerow([key, value])
 
     def load_dict(self, filename: str) -> None:
-        with open(filename, 'f', newline='') as f:
+        with open(filename, 'r', newline='') as f:
             reader = csv.reader(f)
             for row in reader:
                 self.word2id[row[0]] = row[1]
