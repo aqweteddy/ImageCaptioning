@@ -1,17 +1,27 @@
 import os
+from tqdm import tqdm
 from PIL import Image
+from concurrent.futures import ProcessPoolExecutor
 
 
-def resize_images(input_dir: str, output_dir: str, size: int):
-    if not os.path.exists(output_dir):
-        os.makedirs(output_dir)
-
-    images = os.listdir(image_dir)
-    num_images = len(images)
-    for i, image in enumerate(images):
-        with open(os.path.join(image_dir, image), 'r+b') as f:
+def proc1(input_dir: str, image: str, output_dir: str, size):
+    with open(os.path.join(input_dir, image), 'r+b') as f:
             with Image.open(f) as img:
                 img =  img.resize(size, Image.ANTIALIAS)
                 img.save(os.path.join(output_dir, image), img.format)
-        if (i+1) % 100 == 0:
-            print(f'resize image: No.{i+1}')
+
+def resize_images(input_dir: str, output_dir: str, size: int, max_workers=4):
+    if not os.path.exists(output_dir):
+        os.makedirs(output_dir)
+
+    images = os.listdir(input_dir)
+    num_images = len(images)
+    proc = []
+    with ProcessPoolExecutor(max_workers=max_workers) as exe:
+        for image in images:
+            proc.append(exe.submit(proc1, input_dir, image, output_dir, size))
+        
+        for p in tqdm(proc):
+            p.result()
+
+

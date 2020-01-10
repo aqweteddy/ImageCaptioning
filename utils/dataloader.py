@@ -29,9 +29,9 @@ class CocoDataset(data.Dataset):
         path = coco.loadImgs(img_id)[0]['file_name']
         img = Image.open(os.path.join(self.root, path)).convert('RGB')
         tokens = nltk.tokenize.word_tokenize(str(caption))
-        caption = [self.dct('<start>')]
+        caption = [self.dct['<start>']]
         caption.extend([self.dct(token) for token in tokens])
-        caption.append(self.dct('<end>'))
+        caption.append(self.dct['<end>'])
         target = torch.Tensor(caption)
         return image, target
     
@@ -68,12 +68,12 @@ def collate_fn(data):
         targets[i, :end] = cap[:end]        
     return images, targets, lengths
 
-def get_loader(root, json, vocab, transform, batch_size, shuffle, num_workers):
+def get_loader(root, json, dct, transform, batch_size, shuffle, num_workers):
     """Returns torch.utils.data.DataLoader for custom coco dataset."""
     # COCO caption dataset
     coco = CocoDataset(root=root,
                        json=json,
-                       vocab=vocab,
+                       vocab=dct,
                        transform=transform)
     
     # Data loader for COCO dataset
@@ -86,4 +86,4 @@ def get_loader(root, json, vocab, transform, batch_size, shuffle, num_workers):
                                               shuffle=shuffle,
                                               num_workers=num_workers,
                                               collate_fn=collate_fn)
-    return data_loader
+    return data_loader 
