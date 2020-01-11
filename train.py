@@ -37,7 +37,7 @@ args = parser.parse_args()
 device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 print(f'CUDA: {torch.cuda.is_available()}')
 
-crop_size = args.crop_size()
+crop_size = args.crop_size
 transform = transforms.Compose([ 
 transforms.RandomCrop(crop_size),
 transforms.RandomHorizontalFlip(), 
@@ -52,15 +52,15 @@ data_loader = get_loader(args.image_dir, args.caption_path, dct,
 
 
 
-def train(dct_size, num_layers=1, embed_size=256, hidden_size=512, epochs=10, num_layers=1, save_step=1000, lr=0.001, model_save='model/'):
+def train(dct_size, embed_size=256, hidden_size=512, epochs=10, num_layers=1, save_step=1000, lr=0.001, model_save='model/'):
     encoder = Encoder(embed_size=embed_size).to(device)
-    decoder = Decoder(embed_size=embed_size, hidden_size=hidden_size, dct_size=len(dct), num_layers=num_layer).to(device)
+    decoder = Decoder(embed_size=embed_size, hidden_size=hidden_size, dct_size=len(dct), num_layers=num_layers).to(device)
     criterion = nn.CrossEntropyLoss()
     params = list(decoder.parameters()) + list(encoder.linear.parameters()) + list(encoder.bn.parameters())
     optimizer = torch.optim.Adam(params, lr=lr)
 
     for epoch in range(epochs):
-        print(f'epoch {epoch+1}:')
+        print(f'epoch {epoch+1}/{epochs}: ')
         for i, (images, captions, lengths) in enumerate(tqdm(data_loader)):
         # Set mini-batch dataset
             images = images.to(device)
