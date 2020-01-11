@@ -46,6 +46,7 @@ transforms.Normalize((0.485, 0.456, 0.406),
                         (0.229, 0.224, 0.225))])
 dct = Dictionary()
 dct.load_dict(args.vocab_path)
+print(f'Dict Size {len(dct)}')
 data_loader = get_loader(args.image_dir, args.caption_path, dct, 
                              transform, batch_size=args.batch_size,
                              shuffle=True, num_workers=args.num_workers) 

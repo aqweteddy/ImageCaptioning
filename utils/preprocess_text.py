@@ -53,6 +53,4 @@ class Dictionary:
         with open(filename, 'r', newline='') as f:
             reader = csv.reader(f)
             for row in reader:
-                self.word2id[row[0]] = row[1]
-                self.id2word[row[1]] = row[0]
-                self.idx = len(self.word2id)
+                self.add_word(row[0])
