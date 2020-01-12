@@ -18,15 +18,16 @@ class Encoder(nn.Module):
         # feature extraction
         with torch.no_grad():
             features = self.resnet(images)
-        features = features.reshape(features.size(0), -1)
+        features = features.reshape(features.size(0), -1) 
         return self.bn(self.linear(features))
 
 
 class Decoder(nn.Module):
     def __init__(self, embed_size, hidden_size, dct_size, num_layers, max_len=20):
         super(Decoder, self).__init__()
+        self.hidden_size = hidden_size
         self.embed = nn.Embedding(dct_size, embed_size)
-        self.lstm = nn.LSTM(embed_size, hidden_size, num_layers, batch_first=True)
+        self.gru = nn.GRU(embed_size, hidden_size, num_layers, batch_first=True, dropout=0.4, bidirectional=True)
         self.linear = nn.Linear(hidden_size, dct_size)
         self.max_len = max_len
     
@@ -34,15 +35,17 @@ class Decoder(nn.Module):
         embeddings = self.embed(captions)
         embeddings = torch.cat((features.unsqueeze(1), embeddings), 1)
         packed = pack_padded_sequence(embeddings, lengths, batch_first=True) 
-        hiddens, _ = self.lstm(packed)
-        outputs = self.linear(hiddens[0])
+        hiddens, _ = self.gru(packed)
+        outputs = hiddens[0][:, :self.hidden_size] + hiddens[0][:, :self.hidden_size:]
+        
+        outputs = self.linear(outputs)
         return outputs
  
     def get_sample(self, features, states=None):
         sampled_ids = []
         inputs = features.unsqueeze(1)
         for i in range(self.max_len):
-            hiddens, states = self.lstm(inputs, states)          # hiddens: (batch_size, 1, hidden_size)
+            hiddens, states = self.gru(inputs, states)          # hiddens: (batch_size, 1, hidden_size)
             outputs = self.linear(hiddens.squeeze(1))            # outputs:  (batch_size, vocab_size)
             _, predicted = outputs.max(1)                        # predicted: (batch_size)
             sampled_ids.append(predicted)

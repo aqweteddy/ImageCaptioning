@@ -81,6 +81,8 @@ def train(dct_size, embed_size=256, hidden_size=512, epochs=10, num_layers=1, sa
                     model_save, 'decoder-{}-{}.ckpt'.format(epoch+1, i+1)))
                 torch.save(encoder.state_dict(), os.path.join(
                     model_save, 'encoder-{}-{}.ckpt'.format(epoch+1, i+1)))
+
+
 train(len(dct), num_layers=args.num_layers, 
                 embed_size=args.embed_size, 
                 hidden_size=args.hidden_size, 

@@ -6,7 +6,7 @@ python train.py\
         --embed_size 256\
         --hidden_size 512\
         --num_layers 2\
-        --num_epochs 5\
+        --num_epochs 4\
         --batch_size 64\
         --learning_rate 0.001\
 	--model_path model/

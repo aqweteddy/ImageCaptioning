@@ -86,7 +86,7 @@ if __name__ == '__main__':
                                   hidden_size=512,
                                   num_layers=2
                                   )
-    with open('data/val.txt', 'w') as f:
+    with open('data/val_gru.txt', 'w') as f:
         for file in tqdm(os.listdir('data/val2014')):
             if '.jpg' in file:
                 try:
