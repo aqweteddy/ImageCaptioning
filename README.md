@@ -59,7 +59,7 @@ python train.py\
 
 ```py
 from infer import load_model, eval1
-from preprocess_text import Dictionary
+from utils.preprocess_text import Dictionary
 
 
 vocab = Dictionary()
