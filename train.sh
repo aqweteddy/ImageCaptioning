@@ -5,8 +5,8 @@ python train.py\
         --save_ckpt 1000\
         --embed_size 256\
         --hidden_size 512\
-        --num_layers 2\
-        --num_epochs 4\
+        --num_layers 3\
+        --num_epochs 10\
         --batch_size 64\
         --learning_rate 0.001\
 	--model_path model/

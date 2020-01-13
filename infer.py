@@ -79,12 +79,12 @@ if __name__ == '__main__':
     vocab = Dictionary()
     vocab.load_dict('data/vocab.txt')
 
-    encoder, decoder = load_model('model/encoder-5-6000.ckpt',
-                                  'model/decoder-5-6000.ckpt',
+    encoder, decoder = load_model('model/encoder-4-6000.ckpt',
+                                  'model/decoder-4-6000.ckpt',
                                   len(vocab),
                                   embed_size=256,
                                   hidden_size=512,
-                                  num_layers=2
+                                  num_layers=3
                                   )
     with open('data/val_gru.txt', 'w') as f:
         for file in tqdm(os.listdir('data/val2014')):

@@ -27,7 +27,7 @@ class Decoder(nn.Module):
         super(Decoder, self).__init__()
         self.hidden_size = hidden_size
         self.embed = nn.Embedding(dct_size, embed_size)
-        self.gru = nn.GRU(embed_size, hidden_size, num_layers, batch_first=True, dropout=0.4, bidirectional=True)
+        self.gru = nn.GRU(embed_size, hidden_size, num_layers=num_layers, batch_first=True, dropout=0.4)
         self.linear = nn.Linear(hidden_size, dct_size)
         self.max_len = max_len
     
@@ -35,10 +35,8 @@ class Decoder(nn.Module):
         embeddings = self.embed(captions)
         embeddings = torch.cat((features.unsqueeze(1), embeddings), 1)
         packed = pack_padded_sequence(embeddings, lengths, batch_first=True) 
-        hiddens, _ = self.gru(packed)
-        outputs = hiddens[0][:, :self.hidden_size] + hiddens[0][:, :self.hidden_size:]
-        
-        outputs = self.linear(outputs)
+        hiddens, _ = self.gru(packed)        
+        outputs = self.linear(hiddens[0])
         return outputs
  
     def get_sample(self, features, states=None):
