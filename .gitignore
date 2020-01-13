@@ -138,3 +138,4 @@ __*/
 .vscode/
 model/*
 *.out
+evalute/*
