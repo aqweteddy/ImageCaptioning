@@ -136,5 +136,5 @@ __*/
 .*/
 *.zip
 .vscode/
-model/*.ckpt
+model/*
 *.out

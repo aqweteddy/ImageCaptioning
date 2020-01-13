@@ -17,6 +17,7 @@ from tqdm import tqdm
 from argparse import ArgumentParser
 
 parser = ArgumentParser()
+parser.add_argument('--layer_type', type='str', default='gru', help='layer type: gru or lstm')
 parser.add_argument('--model_path', type=str, default='models/' , help='path for saving trained models')
 parser.add_argument('--crop_size', type=int, default=224 , help='size for randomly cropping images')
 parser.add_argument('--vocab_path', type=str, default='data/vocab.txt', help='path for vocabulary wrapper')
@@ -36,6 +37,10 @@ parser.add_argument('--learning_rate', type=float, default=0.001)
 args = parser.parse_args()
 device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 print(f'CUDA: {torch.cuda.is_available()}')
+if args.layer_type == 'lstm':
+    from model import Encoder, Decoder
+else:
+    from model_gru import Encoder, Decoder
 
 crop_size = args.crop_size
 transform = transforms.Compose([ 

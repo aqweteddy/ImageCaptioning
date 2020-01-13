@@ -9,7 +9,6 @@ from torchvision import transforms
 from PIL import Image
 from tqdm import tqdm
 
-from model import Encoder, Decoder
 
 from utils.preprocess_text import Dictionary
 # from utils.preprocess_img import
@@ -28,14 +27,19 @@ def load_image(image_path, transform=None):
 
 
 
-def load_model(
-    encoder_path,
-    decoder_path,
-    vocab_size,
-    embed_size=256,
-    hidden_size=512,
-    num_layers=2,
-):
+def load_model(encoder_path,
+               decoder_path,
+               vocab_size,
+               layer_type='gru',
+               embed_size=256,
+               hidden_size=512,
+               num_layers=2,
+            ):
+    if layer_type == 'lstm':
+        from model import Encoder, Decoder
+    else:
+        from model_gru import Encoder, Decoder
+
     # eval mode (batchnorm uses moving mean/variance)
     encoder = Encoder(embed_size).eval()
     decoder = Decoder(embed_size, hidden_size, vocab_size, num_layers)
@@ -82,6 +86,7 @@ if __name__ == '__main__':
     encoder, decoder = load_model('model/encoder-5-6000.ckpt',
                                   'model/decoder-5-6000.ckpt',
                                   len(vocab),
+                                  layer_type='gru',
                                   embed_size=256,
                                   hidden_size=512,
                                   num_layers=2
