@@ -22,6 +22,11 @@ pip install -r requirements.txt
 * `sh download.sh` to download MS COCO
 <!-- [download flickr8k](https://drive.google.com/drive/folders/19jGGC1HsJRTpGIzBqA7OyO3Z-SxSFQQS?usp=sharing) -->
 
+## Structure
+
+* Encoder: ResNet152
+* Decoder: GRU or LSTM
+
 ## How to run ?
 
 ### Train
@@ -75,6 +80,21 @@ encoder, decoder = load_model(encoder_path='path_to_encder',
 result = eval1('path_to_image', vocab, encoder, decoder)
 print(' '.join(result))
 ```
+
+## Conclusion
+
+### Result
+
+
+* LSTM 4 Epochs, 1 layer, dropout 0: 0.162638
+* GRU 4 Epochs, 1layer, dropout 0: 0.157053
+* GRU 4 Epochs, 3layer, dropout 0.4: 0.144375
+* GRU 8 Epochs, 3layer, dropout 0.4: 0.149145
+
+### Efficacy
+*On RTX2070 GPU:
+	* Train: 30 mins for each epoch
+	* Infer: 0.044 sec / image
 
 ## Citation
 
