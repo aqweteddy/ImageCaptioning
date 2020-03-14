@@ -83,8 +83,7 @@ print(' '.join(result))
 
 ## Conclusion
 
-### Result
-
+### Result(CIDEr)
 
 * LSTM 4 Epochs, 1 layer, dropout 0: 0.162638
 * GRU 4 Epochs, 1layer, dropout 0: 0.157053
